@@ -75,23 +75,35 @@ export const postlogout = async (req, res) => {
   try {
     const token = req.cookies?.token;
     if (token) {
-      const decoded = jwt.verify(token, "jwt-secret");
-      if (decoded && decoded.email) {
-        const user = await Citizen.findOne({ email: decoded.email });
-        if (user) {
-          user.lastLogoutAt = new Date();
-          await user.save();
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        if (decoded && decoded.email) {
+          const user = await Citizen.findOne({ email: decoded.email });
+          if (user) {
+            user.lastLogoutAt = new Date();
+            await user.save();
+          }
         }
+      } catch (jwtError) {
+        // Token is invalid/expired, but we still want to clear the cookie
+        console.log("JWT verification failed during logout:", jwtError.message);
       }
     }
-      res.clearCookie("token", {
+    res.clearCookie("token", {
       httpOnly: true,
       sameSite: "lax",
       secure: false,
     });
     res.status(200).json({ success: true, message: "Logged out successfully" });
   } catch (error) {
-    res.status(400).json({ success: false, message: "Logout failed" });
+    console.error("Logout error:", error);
+    // Still clear the cookie even if there's an error
+    res.clearCookie("token", {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: false,
+    });
+    res.status(200).json({ success: true, message: "Logged out successfully" });
   }
 };
 

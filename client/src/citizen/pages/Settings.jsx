@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   FileText,
@@ -14,6 +14,7 @@ import {
   User,
   Lock,
 } from "lucide-react";
+import axios from "axios";
 
 export default function SettingsPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -23,28 +24,100 @@ export default function SettingsPage() {
   const [documentUpdates, setDocumentUpdates] = useState(true);
   const [systemUpdates, setSystemUpdates] = useState(true);
   const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false); // Declare the variable here
+  const navigate = useNavigate();
 
-  const handleLogout = () => {
-    if (confirm("Are you sure you want to logout?")) {
-      alert("Logged out successfully");
-      // Redirect to login page
+  const handleLogout = async () => {
+    if (!confirm("Are you sure you want to logout?")) return;
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_PATH}/citizen/auth/logout`,
+        {},
+        { withCredentials: true }
+      );
+      if (res.data?.success) {
+        navigate("/login");
+      } else {
+        alert(res.data?.message || "Logout failed. Please try again.");
+      }
+    } catch (error) {
+      alert(
+        error?.response?.data?.message ||
+          "Network error while logging out. Please try again."
+      );
     }
   };
 
-  const handleClearData = () => {
-    alert("Account data cleared successfully");
-    setShowClearDataModal(false);
+  const handleDownloadData = async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_PATH}/user/account/data`,
+        {
+          withCredentials: true,
+          responseType: "blob",
+        }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "account-data.json");
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode?.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      alert(
+        error?.response?.data?.message ||
+          "Failed to download account data. Please try again."
+      );
+    }
   };
 
-  const handleDeleteAccount = () => {
-    alert(
-      "Account deletion request submitted. Your account will be deleted within 30 days."
-    );
-    setShowDeleteAccountModal(false);
+  const handleClearData = async () => {
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_PATH}/user/account/clear`,
+        {},
+        { withCredentials: true }
+      );
+      if (res.data?.success) {
+        alert("Account data cleared successfully.");
+        setShowClearDataModal(false);
+      } else {
+        alert(res.data?.message || "Failed to clear account data.");
+      }
+    } catch (error) {
+      alert(
+        error?.response?.data?.message ||
+          "Network error while clearing data. Please try again."
+      );
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_PATH}/user/account/delete`,
+        {},
+        { withCredentials: true }
+      );
+      if (res.data?.success) {
+        alert("Your account has been deleted.");
+        setShowDeleteModal(false);
+        navigate("/login");
+      } else {
+        alert(res.data?.message || "Failed to delete account.");
+      }
+    } catch (error) {
+      alert(
+        error?.response?.data?.message ||
+          "Network error while deleting account. Please try again."
+      );
+    }
   };
 
   const handleChangePassword = () => {
-    alert("Password change link sent to your registered email");
+    alert("Password change is not implemented yet in this demo.");
   };
 
   return (
@@ -271,6 +344,7 @@ export default function SettingsPage() {
                   </div>
                 </div>
                 <Button
+                  onClick={handleDownloadData}
                   size="sm"
                   variant="outline"
                   className="border-gray-300 text-gray-700 hover:bg-gray-100 bg-transparent"
