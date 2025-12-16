@@ -17,9 +17,12 @@ import AboutPage from "./Prelogin/pages/About";
 import ContactPage from "./Prelogin/pages/Contact";
 import LoginPage from "./Prelogin/pages/Login";
 import SignUpPage from "./Prelogin/pages/Signup";
-
+import PrivateAuth from "./Middlewares/CitizenAuthMiddleware";
+import PrivateAdminAuth from "./Middlewares/AdminAuthMiddleware";
+import { UserProvider } from "./Context/UserContext";
 function App() {
   return (
+    <UserProvider>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Page />} />
@@ -27,37 +30,49 @@ function App() {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/citizen" element={<Dashboard />} />
-        <Route path="/citizen/profile" element={<ProfilePage />} />
-        <Route path="/citizen/document/:id" element={<DocumentDetailsPage />} />
-        <Route path="/citizen/settings" element={<SettingsPage />} />
+        <Route
+          path="/citizen/*"
+          element={
+            <PrivateAuth>
+              <Routes>
+                <Route path="" element={<Dashboard />} />
+                <Route path="profile" element={<ProfilePage />} />
+                <Route path="document/:id" element={<DocumentDetailsPage />} />
+                <Route path="settings" element={<SettingsPage />} />
+              </Routes>
+            </PrivateAuth>
+          }
+        />
         <Route
           path="/admin/*"
           element={
-            <div className="flex h-screen bg-gray-50">
-              <Sidebar />
-              <div className="flex-1 flex flex-col overflow-hidden">
-                <Navbar />
-                <main className="flex-1 overflow-y-auto p-6">
-                  <Routes>
-                    <Route path="/" element={<AdminDashboard />} />
-                    <Route path="/dashboard" element={<AdminDashboard />} />
-                    <Route
-                      path="/verification"
-                      element={<VerificationQueue />}
-                    />
-                    <Route path="/review/:id" element={<DocumentReview />} />
-                    <Route path="/logs" element={<LogsAudit />} />
-                    <Route path="/users" element={<UserManagement />} />
-                    <Route path="/settings" element={<Settings />} />
-                  </Routes>
-                </main>
+            <PrivateAdminAuth>
+              <div className="flex h-screen bg-gray-50">
+                <Sidebar />
+                <div className="flex-1 flex flex-col overflow-hidden">
+                  <Navbar />
+                  <main className="flex-1 overflow-y-auto p-6">
+                    <Routes>
+                      <Route path="" element={<AdminDashboard />} />
+                      <Route path="dashboard" element={<AdminDashboard />} />
+                      <Route
+                        path="verification"
+                        element={<VerificationQueue />}
+                      />
+                      <Route path="review/:id" element={<DocumentReview />} />
+                      <Route path="logs" element={<LogsAudit />} />
+                      <Route path="users" element={<UserManagement />} />
+                      <Route path="settings" element={<Settings />} />
+                    </Routes>
+                  </main>
+                </div>
               </div>
-            </div>
+            </PrivateAdminAuth>
           }
         />
       </Routes>
     </BrowserRouter>
+    </UserProvider>
   );
 }
 

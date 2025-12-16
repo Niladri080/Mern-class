@@ -5,22 +5,35 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { ShieldCheck } from "lucide-react";
-
+import { Eye, EyeOff } from "lucide-react";
+import axios from "axios";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log("Login attempt:", { email, password });
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_PATH}/citizen/auth/login`,
+        { email, password },
+        { withCredentials: true }
+      );
+      if (res.data.success) {
+        navigate("/citizen");
+      } else {
+        alert(res.data.message || "Login failed");
+      }
+    } catch (err) {
+      alert(
+        err?.response?.data?.message || "Network error. Please try again later."
+      );
+    }
   };
-
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md animate-[fade-in-up_0.6s_ease-out]">
-        {/* Logo and Title */}
         <div className="text-center mb-8">
           <Link
             to="/"
@@ -38,11 +51,8 @@ export default function LoginPage() {
             Sign in to your account to continue
           </p>
         </div>
-
-        {/* Login Form */}
         <Card className="p-8 shadow-lg border-border">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Email Field */}
             <div className="space-y-2">
               <Label htmlFor="email" className="text-foreground font-medium">
                 Email Address
@@ -57,8 +67,6 @@ export default function LoginPage() {
                 className="h-11"
               />
             </div>
-
-            {/* Password Field */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label
@@ -74,18 +82,27 @@ export default function LoginPage() {
                   Forgot password?
                 </Link>
               </div>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="h-11"
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="h-11 pr-12"
+                />
+                <button
+                  type="button"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-primary hover:opacity-80 focus:outline-none"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  tabIndex={-1}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </div>
-
-            {/* Submit Button */}
             <Button
               type="submit"
               className="w-full h-11 bg-primary hover:bg-accent text-primary-foreground font-medium transition-all duration-300 hover:scale-[1.02]"
@@ -93,8 +110,6 @@ export default function LoginPage() {
               Sign In
             </Button>
           </form>
-
-          {/* Divider */}
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-border"></div>
@@ -103,8 +118,6 @@ export default function LoginPage() {
               <span className="px-4 bg-card text-muted-foreground">Or</span>
             </div>
           </div>
-
-          {/* Sign Up Link */}
           <div className="text-center">
             <p className="text-muted-foreground">
               Don't have an account?{" "}
@@ -117,8 +130,6 @@ export default function LoginPage() {
             </p>
           </div>
         </Card>
-
-        {/* Back to Home */}
         <div className="text-center mt-6">
           <Link
             to="/"

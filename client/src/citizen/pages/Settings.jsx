@@ -393,32 +393,6 @@ export default function SettingsPage() {
               </div>
             </div>
           </div>
-
-          {/* Logout Section */}
-          <div className="bg-white border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <LogOut className="w-5 h-5" />
-              Logout
-            </h2>
-            <div className="flex items-center justify-between py-3">
-              <div>
-                <div className="text-sm font-medium text-gray-900">
-                  Sign Out
-                </div>
-                <div className="text-sm text-gray-600">
-                  Logout from your account and end your current session
-                </div>
-              </div>
-              <Button
-                onClick={handleLogout}
-                size="sm"
-                className="bg-gray-800 text-white hover:bg-gray-900"
-              >
-                <LogOut className="w-4 h-4 mr-2" />
-                Logout
-              </Button>
-            </div>
-          </div>
         </div>
       </main>
 

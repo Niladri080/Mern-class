@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { postlogin, postlogout, postsignup } from "../Controllers/userAuth.js";
+import { postlogin, postsignup, postlogout} from "../Controllers/USerAuthController.js";
 const router=Router();
 router.post('/signup',postsignup);
 router.post('/login',postlogin);

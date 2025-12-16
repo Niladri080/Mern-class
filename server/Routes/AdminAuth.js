@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { postlogin, postlogout, postsignup } from "../Controllers/adminAuth.js";
+import { postlogin, postlogout, postsignup } from "../Controllers/AdminAuthController.js";
 const router=Router();
 router.post('/signup',postsignup);
 router.post('/login',postlogin);

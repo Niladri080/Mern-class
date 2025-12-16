@@ -20,5 +20,10 @@ const citizenSchema=new mongoose.Schema({
       type: Date,
       default: null
     },
+  phoneNumber: {type:String,required:false},
+  address: {type:String,required:false},
+  dateOfBirth: {type:Date,required:false},
+  govtIds: [{type:String,required:false}],
+
 })
 export const Citizen=mongoose.model("citizens",citizenSchema);

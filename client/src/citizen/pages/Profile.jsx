@@ -1,29 +1,56 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, User, Mail, Phone, MapPin, Calendar } from "lucide-react";
 import Header from "../components/Header";
+import axios from "axios";
 
 export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "Rajesh Kumar",
-    email: "rajesh.kumar@email.com",
-    phone: "+91 98765 43210",
-    address: "123 MG Road, Bangalore, Karnataka, India - 560001",
-    dateOfBirth: "1985-06-15",
-    aadhaarNumber: "XXXX XXXX 1234",
-    panNumber: "ABCDE1234F",
-  });
+  const [formData, setFormData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const stats = {
-    totalDocuments: 24,
-    approvedDocuments: 18,
-    pendingDocuments: 4,
-    rejectedDocuments: 2,
-    accountCreated: "2023-01-15",
-    lastLogin: "2024-03-20 14:23",
-  };
+  useEffect(() => {
+    const fetchProfile = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_PATH}/user/profile`,
+          { withCredentials: true }
+        );
+        if (res.data.success) {
+          setFormData({
+            name: res.data.citizen.name || "",
+            email: res.data.citizen.email || "",
+            phone: res.data.citizen.phoneNumber || "",
+            address: res.data.citizen.address || "",
+            dateOfBirth: res.data.citizen.dateOfBirth || "",
+            aadhaarNumber: res.data.citizen.govtIds?.find(
+              (id) => id.type === "aadhaar"
+            )?.value
+              ? res.data.citizen.govtIds?.find((id) => id.type === "aadhaar")
+                  ?.value
+              : "",
+            panNumber: res.data.citizen.govtIds?.find((id) => id.type === "pan")
+              ?.value
+              ? res.data.citizen.govtIds?.find((id) => id.type === "pan")?.value
+              : "",
+            accountCreated: res.data.citizen.createdAt || "",
+            lastLogin: res.data.citizen.lastLoginAt || "",
+          });
+        } else {
+          setError(res.data.message || "Failed to fetch profile");
+        }
+      } catch (err) {
+        setError(err?.response?.data?.message || "Network error");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   const handleInputChange = (e) => {
     setFormData({
@@ -37,6 +64,40 @@ export default function ProfilePage() {
     alert("Profile updated successfully");
     setIsEditing(false);
   };
+
+  // Helper to decide if a field should be editable (if missing or editing)
+  const editableField = (field, label, type = "text") => {
+    return isEditing || !formData[field] ? (
+      <input
+        type={type}
+        name={field}
+        value={formData[field] || ""}
+        onChange={handleInputChange}
+        className="w-full px-3 py-2 border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-400"
+        required
+      />
+    ) : (
+      <div className="text-sm text-gray-900">{formData[field]}</div>
+    );
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-red-600">
+        {error}
+      </div>
+    );
+  }
+  if (!formData) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -81,20 +142,7 @@ export default function ProfilePage() {
                       <User className="w-4 h-4 inline mr-2" />
                       Full Name
                     </label>
-                    {isEditing ? (
-                      <input
-                        type="text"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                        required
-                      />
-                    ) : (
-                      <div className="text-sm text-gray-900">
-                        {formData.name}
-                      </div>
-                    )}
+                    {editableField("name", "Full Name")}
                   </div>
 
                   <div>
@@ -102,20 +150,7 @@ export default function ProfilePage() {
                       <Mail className="w-4 h-4 inline mr-2" />
                       Email Address
                     </label>
-                    {isEditing ? (
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                        required
-                      />
-                    ) : (
-                      <div className="text-sm text-gray-900">
-                        {formData.email}
-                      </div>
-                    )}
+                    {editableField("email", "Email Address", "email")}
                   </div>
 
                   <div>
@@ -123,20 +158,7 @@ export default function ProfilePage() {
                       <Phone className="w-4 h-4 inline mr-2" />
                       Phone Number
                     </label>
-                    {isEditing ? (
-                      <input
-                        type="tel"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                        required
-                      />
-                    ) : (
-                      <div className="text-sm text-gray-900">
-                        {formData.phone}
-                      </div>
-                    )}
+                    {editableField("phone", "Phone Number", "tel")}
                   </div>
 
                   <div>
@@ -144,10 +166,10 @@ export default function ProfilePage() {
                       <MapPin className="w-4 h-4 inline mr-2" />
                       Address
                     </label>
-                    {isEditing ? (
+                    {isEditing || !formData.address ? (
                       <textarea
                         name="address"
-                        value={formData.address}
+                        value={formData.address || ""}
                         onChange={handleInputChange}
                         rows={3}
                         className="w-full px-3 py-2 border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-400"
@@ -165,20 +187,7 @@ export default function ProfilePage() {
                       <Calendar className="w-4 h-4 inline mr-2" />
                       Date of Birth
                     </label>
-                    {isEditing ? (
-                      <input
-                        type="date"
-                        name="dateOfBirth"
-                        value={formData.dateOfBirth}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                        required
-                      />
-                    ) : (
-                      <div className="text-sm text-gray-900">
-                        {formData.dateOfBirth}
-                      </div>
-                    )}
+                    {editableField("dateOfBirth", "Date of Birth", "date")}
                   </div>
                 </div>
 
@@ -214,7 +223,13 @@ export default function ProfilePage() {
                     Aadhaar Number
                   </div>
                   <div className="text-sm text-gray-900">
-                    {formData.aadhaarNumber}
+                    {formData.aadhaarNumber ? (
+                      formData.aadhaarNumber
+                    ) : (
+                      <span className="text-gray-400 italic">
+                        Not uploaded yet
+                      </span>
+                    )}
                   </div>
                 </div>
                 <div>
@@ -222,7 +237,13 @@ export default function ProfilePage() {
                     PAN Number
                   </div>
                   <div className="text-sm text-gray-900">
-                    {formData.panNumber}
+                    {formData.panNumber ? (
+                      formData.panNumber
+                    ) : (
+                      <span className="text-gray-400 italic">
+                        Not uploaded yet
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -240,27 +261,19 @@ export default function ProfilePage() {
                   <div className="text-sm text-gray-600 mb-1">
                     Total Documents
                   </div>
-                  <div className="text-2xl font-semibold text-gray-900">
-                    {stats.totalDocuments}
-                  </div>
+                  <div className="text-2xl font-semibold text-gray-900">24</div>
                 </div>
                 <div className="pt-3 border-t border-gray-200">
                   <div className="text-sm text-gray-600 mb-1">Approved</div>
-                  <div className="text-xl font-semibold text-green-700">
-                    {stats.approvedDocuments}
-                  </div>
+                  <div className="text-xl font-semibold text-green-700">18</div>
                 </div>
                 <div className="pt-3 border-t border-gray-200">
                   <div className="text-sm text-gray-600 mb-1">Pending</div>
-                  <div className="text-xl font-semibold text-orange-700">
-                    {stats.pendingDocuments}
-                  </div>
+                  <div className="text-xl font-semibold text-orange-700">4</div>
                 </div>
                 <div className="pt-3 border-t border-gray-200">
                   <div className="text-sm text-gray-600 mb-1">Rejected</div>
-                  <div className="text-xl font-semibold text-red-700">
-                    {stats.rejectedDocuments}
-                  </div>
+                  <div className="text-xl font-semibold text-red-700">2</div>
                 </div>
               </div>
             </div>
@@ -275,12 +288,26 @@ export default function ProfilePage() {
                     Account Created
                   </div>
                   <div className="text-sm text-gray-900">
-                    {stats.accountCreated}
+                    {formData.accountCreated ? (
+                      new Date(formData.accountCreated).toLocaleDateString()
+                    ) : (
+                      <span className="text-gray-400 italic">
+                        Not available
+                      </span>
+                    )}
                   </div>
                 </div>
                 <div className="pt-3 border-t border-gray-200">
                   <div className="text-sm text-gray-600 mb-1">Last Login</div>
-                  <div className="text-sm text-gray-900">{stats.lastLogin}</div>
+                  <div className="text-sm text-gray-900">
+                    {formData.lastLogin ? (
+                      new Date(formData.lastLogin).toLocaleString()
+                    ) : (
+                      <span className="text-gray-400 italic">
+                        Not available
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
