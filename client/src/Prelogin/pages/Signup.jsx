@@ -234,7 +234,7 @@ export default function SignUpPage() {
         </Card>
         <AlertModal open={alertState.open} title={alertState.title} message={alertState.message} primaryLabel={alertState.primaryLabel} onPrimary={alertState.onPrimary || (() => setAlertState({open:false}))} />
         <div className="text-center mt-6">
-        </Card>
+        </div>
         <div className="text-center mt-6">
           <Link
             to="/"
