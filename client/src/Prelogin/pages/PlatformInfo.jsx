@@ -1,5 +1,6 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import PageWrapper from "../../components/PageWrapper";
 
 export default function PlatformInfoPage({ title }) {
   const lower = title.toLowerCase();
@@ -68,30 +69,33 @@ export default function PlatformInfoPage({ title }) {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-1 py-20 md:py-28 animate-[fade-in-up_0.5s_ease-out]">
-        <div className="container mx-auto px-4 lg:px-8 max-w-4xl space-y-10">
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-            {title}
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            Learn more about how DocVerify supports secure, transparent and
-            efficient digital document verification.
-          </p>
-          <div className="space-y-6">
-            {sections.map((section) => (
-              <section key={section.heading} className="space-y-2">
-                <h2 className="text-2xl font-semibold text-foreground">
-                  {section.heading}
-                </h2>
-                <p className="text-muted-foreground">{section.body}</p>
-              </section>
-            ))}
+      <PageWrapper>
+        <main className="flex-1 py-20 md:py-28 animate-[fade-in-up_0.5s_ease-out]">
+          <div className="container mx-auto px-4 lg:px-8 max-w-4xl space-y-10">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+              {title}
+            </h1>
+            <p className="text-muted-foreground text-lg">
+              Learn more about how DocVerify supports secure, transparent and
+              efficient digital document verification.
+            </p>
+            <div className="space-y-6">
+              {sections.map((section) => (
+                <section
+                  key={section.heading}
+                  className="space-y-2 glass-card p-6 rounded-lg"
+                >
+                  <h2 className="text-2xl font-semibold text-foreground">
+                    {section.heading}
+                  </h2>
+                  <p className="text-muted-foreground">{section.body}</p>
+                </section>
+              ))}
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </PageWrapper>
       <Footer />
     </div>
   );
 }
-
-

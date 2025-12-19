@@ -1,32 +1,39 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 export default function TrustSecuritySection() {
-  const itemsRef = useRef([])
+  const itemsRef = useRef([]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add("animate-in")
+            entry.target.classList.add("animate-in");
           }
-        })
+        });
       },
-      { threshold: 0.1 },
-    )
+      { threshold: 0.1 }
+    );
 
     itemsRef.current.forEach((item) => {
-      if (item) observer.observe(item)
-    })
+      if (item) observer.observe(item);
+    });
 
-    return () => observer.disconnect()
-  }, [])
+    return () => observer.disconnect();
+  }, []);
 
   const trustItems = [
     {
       title: "Secure Authentication",
-      description: "Multi-factor authentication and encrypted credentials protect user accounts.",
+      description:
+        "Multi-factor authentication and encrypted credentials protect user accounts.",
       icon: (
-        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          className="h-5 w-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -38,9 +45,15 @@ export default function TrustSecuritySection() {
     },
     {
       title: "Complete Audit Trails",
-      description: "Every action is logged and traceable, ensuring full transparency and accountability.",
+      description:
+        "Every action is logged and traceable, ensuring full transparency and accountability.",
       icon: (
-        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          className="h-5 w-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -52,9 +65,15 @@ export default function TrustSecuritySection() {
     },
     {
       title: "Data Privacy",
-      description: "Your personal information is encrypted and never shared without explicit consent.",
+      description:
+        "Your personal information is encrypted and never shared without explicit consent.",
       icon: (
-        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          className="h-5 w-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -66,9 +85,15 @@ export default function TrustSecuritySection() {
     },
     {
       title: "Government-Grade Reliability",
-      description: "99.9% uptime with redundant systems and regular security audits.",
+      description:
+        "99.9% uptime with redundant systems and regular security audits.",
       icon: (
-        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          className="h-5 w-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -78,7 +103,7 @@ export default function TrustSecuritySection() {
         </svg>
       ),
     },
-  ]
+  ];
 
   return (
     <section className="py-20 md:py-28 bg-muted/30">
@@ -94,23 +119,32 @@ export default function TrustSecuritySection() {
 
         <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {trustItems.map((item, index) => (
-            <div
+            <motion.div
               key={index}
               ref={(el) => (itemsRef.current[index] = el)}
-              className="flex items-start gap-4 p-6 rounded-lg border border-border bg-card hover:shadow-md transition-all duration-500 opacity-0 translate-x-8"
-              style={{ transitionDelay: `${index * 150}ms` }}
+              initial={{ opacity: 0, x: 18 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7, delay: index * 0.12 }}
+              viewport={{ once: true, amount: 0.2 }}
+              className="tilt"
             >
-              <div className="flex-shrink-0 h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-                {item.icon}
+              <div className="flex items-start gap-4 p-6 rounded-xl border border-border bg-card/90 hover:shadow-lg transition-all duration-500">
+                <div className="flex-shrink-0 h-10 w-10 rounded-lg bg-gradient-to-tr from-primary/10 to-accent/10 flex items-center justify-center text-primary">
+                  {item.icon}
+                </div>
+                <div className="space-y-1">
+                  <h3 className="font-semibold text-foreground">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
               </div>
-              <div className="space-y-1">
-                <h3 className="font-semibold text-foreground">{item.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{item.description}</p>
-              </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
     </section>
-  )
+  );
 }

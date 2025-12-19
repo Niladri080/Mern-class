@@ -1,7 +1,8 @@
-import Header from "../components/Header" 
-import Footer from "../components/Footer" 
-import { Button } from "@/components/ui/button"
-import { useState } from "react"
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import PageWrapper from "../../components/PageWrapper";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -9,20 +10,20 @@ export default function ContactPage() {
     email: "",
     subject: "",
     message: "",
-  })
+  });
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log("[v0] Form submitted:", formData)
+    e.preventDefault();
+    console.log("[v0] Form submitted:", formData);
     // Handle form submission
-  }
+  };
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
-    })
-  }
+    });
+  };
 
   return (
     <div className="min-h-screen">
@@ -30,7 +31,9 @@ export default function ContactPage() {
       <main className="py-20 md:py-28 animate-[fade-in-up_0.5s_ease-out]">
         <div className="container mx-auto px-4 lg:px-8 max-w-4xl">
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 text-balance">Contact Us</h1>
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 text-balance">
+              Contact Us
+            </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Have questions? We're here to help. Reach out to our team.
             </p>
@@ -41,7 +44,12 @@ export default function ContactPage() {
               <div className="border border-border rounded-lg p-6 bg-card">
                 <div className="flex items-start gap-4">
                   <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <svg className="h-6 w-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg
+                      className="h-6 w-6 text-primary"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -51,8 +59,12 @@ export default function ContactPage() {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-foreground mb-1">Email</h3>
-                    <p className="text-muted-foreground">support@docverify.gov</p>
+                    <h3 className="text-lg font-semibold text-foreground mb-1">
+                      Email
+                    </h3>
+                    <p className="text-muted-foreground">
+                      support@docverify.gov
+                    </p>
                   </div>
                 </div>
               </div>
@@ -60,7 +72,12 @@ export default function ContactPage() {
               <div className="border border-border rounded-lg p-6 bg-card">
                 <div className="flex items-start gap-4">
                   <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <svg className="h-6 w-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg
+                      className="h-6 w-6 text-primary"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -70,7 +87,9 @@ export default function ContactPage() {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-foreground mb-1">Phone</h3>
+                    <h3 className="text-lg font-semibold text-foreground mb-1">
+                      Phone
+                    </h3>
                     <p className="text-muted-foreground">1-800-DOC-VERIFY</p>
                   </div>
                 </div>
@@ -79,7 +98,12 @@ export default function ContactPage() {
               <div className="border border-border rounded-lg p-6 bg-card">
                 <div className="flex items-start gap-4">
                   <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <svg className="h-6 w-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg
+                      className="h-6 w-6 text-primary"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -89,9 +113,15 @@ export default function ContactPage() {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-foreground mb-1">Business Hours</h3>
-                    <p className="text-muted-foreground">Mon-Fri: 9:00 AM - 6:00 PM</p>
-                    <p className="text-muted-foreground text-sm">Response within 24 hours</p>
+                    <h3 className="text-lg font-semibold text-foreground mb-1">
+                      Business Hours
+                    </h3>
+                    <p className="text-muted-foreground">
+                      Mon-Fri: 9:00 AM - 6:00 PM
+                    </p>
+                    <p className="text-muted-foreground text-sm">
+                      Response within 24 hours
+                    </p>
                   </div>
                 </div>
               </div>
@@ -99,7 +129,10 @@ export default function ContactPage() {
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-foreground mb-2"
+                >
                   Name
                 </label>
                 <input
@@ -114,7 +147,10 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-foreground mb-2"
+                >
                   Email
                 </label>
                 <input
@@ -129,7 +165,10 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label htmlFor="subject" className="block text-sm font-medium text-foreground mb-2">
+                <label
+                  htmlFor="subject"
+                  className="block text-sm font-medium text-foreground mb-2"
+                >
                   Subject
                 </label>
                 <input
@@ -144,7 +183,10 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-foreground mb-2">
+                <label
+                  htmlFor="message"
+                  className="block text-sm font-medium text-foreground mb-2"
+                >
                   Message
                 </label>
                 <textarea
@@ -158,7 +200,11 @@ export default function ContactPage() {
                 />
               </div>
 
-              <Button type="submit" size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+              <Button
+                type="submit"
+                size="lg"
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+              >
                 Send Message
               </Button>
             </form>
@@ -167,5 +213,5 @@ export default function ContactPage() {
       </main>
       <Footer />
     </div>
-  )
+  );
 }

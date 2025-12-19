@@ -1,32 +1,23 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef } from "react";
+import { motion, useInView } from "framer-motion";
 export default function HowItWorksSection() {
-  const stepsRef = useRef([])
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("animate-in")
-          }
-        })
-      },
-      { threshold: 0.1 },
-    )
-
-    stepsRef.current.forEach((step) => {
-      if (step) observer.observe(step)
-    })
-
-    return () => observer.disconnect()
-  }, [])
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const stepsRef = useRef([]);
 
   const steps = [
     {
       number: "01",
       title: "Upload Documents Securely",
-      description: "Citizens upload their documents through our encrypted platform with multi-factor authentication.",
+      description:
+        "Citizens upload their documents through our encrypted platform with multi-factor authentication.",
       icon: (
-        <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          className="h-6 w-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -39,9 +30,15 @@ export default function HowItWorksSection() {
     {
       number: "02",
       title: "Automated Pre-Verification",
-      description: "AI-powered analysis checks document authenticity, completeness, and compliance automatically.",
+      description:
+        "AI-powered analysis checks document authenticity, completeness, and compliance automatically.",
       icon: (
-        <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          className="h-6 w-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -54,9 +51,15 @@ export default function HowItWorksSection() {
     {
       number: "03",
       title: "Admin Review & Approval",
-      description: "Trained administrators review flagged documents and make final verification decisions.",
+      description:
+        "Trained administrators review flagged documents and make final verification decisions.",
       icon: (
-        <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          className="h-6 w-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -69,9 +72,15 @@ export default function HowItWorksSection() {
     {
       number: "04",
       title: "Track Status & Activity",
-      description: "Real-time tracking and comprehensive audit logs provide full transparency throughout the process.",
+      description:
+        "Real-time tracking and comprehensive audit logs provide full transparency throughout the process.",
       icon: (
-        <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          className="h-6 w-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -81,28 +90,39 @@ export default function HowItWorksSection() {
         </svg>
       ),
     },
-  ]
+  ];
 
   return (
     <section id="how-it-works" className="py-20 md:py-28 bg-muted/30">
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 text-balance">How It Works</h2>
+        <motion.div
+          ref={ref}
+          initial={{ opacity: 0, y: 50 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 text-balance">
+            How It Works
+          </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-pretty">
             A simple, transparent process designed for efficiency and security
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {steps.map((step, index) => (
-            <div
+            <motion.div
               key={index}
               ref={(el) => (stepsRef.current[index] = el)}
-              className="relative opacity-0 translate-y-8 transition-all duration-700 hover:scale-105"
-              style={{ transitionDelay: `${index * 150}ms` }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: index * 0.12 }}
+              viewport={{ once: true, amount: 0.2 }}
+              className="relative tilt"
             >
-              <div className="flex flex-col items-center text-center space-y-4">
-                <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary/20 transition-colors duration-300">
+              <div className="flex flex-col items-center text-center space-y-4 p-6 rounded-lg border border-border bg-card hover:shadow-lg transition-shadow duration-300">
+                <div className="h-16 w-16 rounded-full bg-gradient-to-tr from-primary/10 to-accent/10 flex items-center justify-center text-primary transition-transform duration-300">
                   {step.icon}
                 </div>
                 <div className="text-xs font-bold text-muted-foreground tracking-wider">{step.number}</div>
@@ -112,10 +132,10 @@ export default function HowItWorksSection() {
               {index < steps.length - 1 && (
                 <div className="hidden lg:block absolute top-8 -right-4 w-8 h-px bg-border" />
               )}
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
     </section>
-  )
+  );
 }

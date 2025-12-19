@@ -1,24 +1,25 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 export default function KeyFeaturesSection() {
-  const featuresRef = useRef([])
+  const featuresRef = useRef([]);
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add("animate-in")
+            entry.target.classList.add("animate-in");
           }
-        })
+        });
       },
-      { threshold: 0.1 },
-    )
+      { threshold: 0.1 }
+    );
 
     featuresRef.current.forEach((feature) => {
-      if (feature) observer.observe(feature)
-    })
+      if (feature) observer.observe(feature);
+    });
 
-    return () => observer.disconnect()
-  }, [])
+    return () => observer.disconnect();
+  }, []);
 
   const features = [
     {
@@ -26,7 +27,12 @@ export default function KeyFeaturesSection() {
       description:
         "End-to-end encryption ensures your sensitive documents remain protected throughout the verification process.",
       icon: (
-        <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          className="h-6 w-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -41,30 +47,32 @@ export default function KeyFeaturesSection() {
       description:
         "Track your document verification in real-time with instant notifications at every step of the process.",
       icon: (
-        <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-        </svg>
-      ),
-    },
-    {
-      title: "AI-Assisted Analysis",
-      description: "Advanced AI algorithms automatically detect inconsistencies and verify document authenticity.",
-      icon: (
-        <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          className="h-6 w-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth={2}
-            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+            d="M13 10V3L4 14h7v7l9-11h-7z"
           />
         </svg>
       ),
     },
     {
-      title: "Transparent Activity Logs",
-      description: "Complete audit trail of all actions taken on your documents, ensuring full accountability.",
+      title: "AI-Assisted Analysis",
+      description:
+        "Advanced AI algorithms automatically detect inconsistencies and verify document authenticity.",
       icon: (
-        <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          className="h-6 w-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -76,9 +84,15 @@ export default function KeyFeaturesSection() {
     },
     {
       title: "Role-Based Access Control",
-      description: "Separate portals for citizens and administrators with appropriate permissions and capabilities.",
+      description:
+        "Separate portals for citizens and administrators with appropriate permissions and capabilities.",
       icon: (
-        <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          className="h-6 w-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -90,9 +104,15 @@ export default function KeyFeaturesSection() {
     },
     {
       title: "Compliance & Standards",
-      description: "Built to meet government standards and regulatory requirements for digital document management.",
+      description:
+        "Built to meet government standards and regulatory requirements for digital document management.",
       icon: (
-        <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          className="h-6 w-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -102,13 +122,15 @@ export default function KeyFeaturesSection() {
         </svg>
       ),
     },
-  ]
+  ];
 
   return (
     <section className="py-20 md:py-28">
       <div className="container mx-auto px-4 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 text-balance">Key Features</h2>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 text-balance">
+            Key Features
+          </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-pretty">
             Everything you need for secure and efficient document verification
           </p>
@@ -119,16 +141,20 @@ export default function KeyFeaturesSection() {
             <div
               key={index}
               ref={(el) => (featuresRef.current[index] = el)}
-              className="group opacity-0 translate-y-8 transition-all duration-700 hover:scale-105"
+              className="group opacity-0 translate-y-8 transition-all duration-700 tilt"
               style={{ transitionDelay: `${index * 100}ms` }}
             >
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 h-12 w-12 rounded-lg bg-accent/10 flex items-center justify-center text-accent group-hover:bg-accent group-hover:text-accent-foreground transition-all duration-300">
+              <div className="flex items-start gap-4 p-6 rounded-xl border border-border bg-card hover:shadow-xl transition-shadow duration-300">
+                <div className="flex-shrink-0 h-12 w-12 rounded-lg bg-gradient-to-tr from-accent/10 to-primary/10 flex items-center justify-center text-accent transition-transform duration-300">
                   {feature.icon}
                 </div>
                 <div className="space-y-2">
-                  <h3 className="text-lg font-semibold text-foreground">{feature.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
+                  <h3 className="text-lg font-semibold text-foreground">
+                    {feature.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {feature.description}
+                  </p>
                 </div>
               </div>
             </div>
@@ -136,5 +162,5 @@ export default function KeyFeaturesSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }

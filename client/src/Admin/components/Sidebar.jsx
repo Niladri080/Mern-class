@@ -21,15 +21,15 @@ function Sidebar() {
   ];
 
   return (
-    <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
+    <aside className="w-64 bg-background/80 backdrop-blur-md border-r border-border flex flex-col">
       <div className="p-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-slate-700 rounded flex items-center justify-center">
+          <div className="w-10 h-10 bg-gradient-to-tr from-primary to-accent rounded-full flex items-center justify-center shadow-md">
             <span className="text-white font-bold text-lg">eG</span>
           </div>
           <div>
-            <p className="font-semibold text-gray-900">Admin</p>
-            <p className="text-xs text-gray-500">Control Panel</p>
+            <p className="font-semibold text-foreground">Admin</p>
+            <p className="text-xs text-muted-foreground">Control Panel</p>
           </div>
         </div>
       </div>
@@ -41,8 +41,8 @@ function Sidebar() {
             className={({ isActive }) =>
               `flex items-center gap-3 px-3 py-3 mb-1 rounded transition-colors ${
                 isActive
-                  ? "bg-slate-700 text-white"
-                  : "text-gray-700 hover:bg-gray-100"
+                  ? "bg-gradient-to-tr from-primary to-accent text-white shadow-md"
+                  : "text-foreground/80 hover:bg-muted/50"
               }`
             }
           >
