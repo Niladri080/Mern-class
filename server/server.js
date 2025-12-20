@@ -32,7 +32,7 @@ await connectDB();
 // setup socket.io
 const io = new IoServer(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin: process.env.FRONTEND_URL || "https://docverify-two.vercel.app/",
     methods: ["GET", "POST"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -47,19 +47,6 @@ io.engine.on("connection_error", (err) => {
   console.warn("Socket engine connection_error:", err?.message || err);
 });
 app.set("io", io);
-
-// Root endpoint
-app.get("/", (req, res) => {
-  res.status(200).json({ 
-    message: "DocVerify API Server",
-    status: "running",
-    version: "1.0.0",
-    endpoints: {
-      health: "/health",
-      api: "/api"
-    }
-  });
-});
 
 // Health check endpoint (for monitoring services like UptimeRobot)
 app.get("/health", (req, res) => {

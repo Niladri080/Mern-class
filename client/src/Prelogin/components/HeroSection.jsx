@@ -12,9 +12,9 @@ export default function HeroSection() {
     <section id="home" className="py-0 overflow-hidden relative">
       <div className="absolute inset-x-0 -top-2 h-24" aria-hidden />
       <motion.div
-        initial={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: -6 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
         className="absolute inset-x-0 top-6 z-30 flex flex-col items-center gap-4"
       >
         <BlurText

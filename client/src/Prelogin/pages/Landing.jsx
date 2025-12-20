@@ -6,8 +6,23 @@ import HowItWorksSection from "../components/HowItWorks";
 import KeyFeaturesSection from "../components/KeyFeatures";
 import { FeaturesSectionDemo } from "../components/Bentogrid";
 import TrustSecuritySection from "../components/TrustSecurity";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import { useState, useEffect } from "react";
 
 export default function Page() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000); // Simulate loading time
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-transparent via-white/50 dark:via-black/10 to-transparent">

@@ -38,14 +38,7 @@ export const MacbookScroll = ({
       <div className="w-full flex justify-center py-0">
         <div className="w-full max-w-7xl px-4">
           <div className="relative h-[520px] w-full overflow-hidden rounded-2xl shadow-2xl border border-border">
-            <img 
-              src={src} 
-              alt="hero" 
-              className="w-full h-full object-cover"
-              loading="eager"
-              fetchPriority="high"
-              decoding="async"
-            />
+            <img src={src} alt="hero" className="w-full h-full object-cover" />
 
             {showGradient && (
               <div className="absolute inset-x-0 bottom-0 z-50 h-36 w-full bg-gradient-to-t from-white via-white to-transparent dark:from-black dark:via-black" />
@@ -165,9 +158,6 @@ export const Lid = ({ scaleX, scaleY, rotate, translate, src }) => {
           src={src}
           alt="aceternity logo"
           className="absolute inset-0 h-full w-full rounded-lg object-cover object-left-top"
-          loading="eager"
-          fetchPriority="high"
-          decoding="async"
         />
       </motion.div>
     </div>
