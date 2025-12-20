@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, User, Mail, Phone, MapPin, Calendar } from "lucide-react";
 import Header from "../components/Header";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import axios from "axios";
 import AlertModal from "@/components/ui/AlertModal";
 
@@ -259,11 +260,7 @@ export default function ProfilePage() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        Loading...
-      </div>
-    );
+    return <LoadingSpinner />;
   }
   if (error) {
     return (
