@@ -57,6 +57,21 @@ app.use(
   })
 );
 app.use(express.urlencoded({ extended: true }));
+
+// Trust proxy when deployed behind a proxy (Render/Vercel), so secure cookies and req.ip work correctly
+if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", 1);
+}
+
+// Lightweight request logging to help verify traffic reaches the API in production
+if (process.env.NODE_ENV !== "test") {
+  app.use((req, res, next) => {
+    const now = new Date().toISOString();
+    console.log(`[${now}] ${req.ip} ${req.method} ${req.originalUrl}`);
+    next();
+  });
+}
+
 await connectDB();
 // setup socket.io
 const io = new IoServer(server, {

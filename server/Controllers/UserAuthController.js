@@ -143,13 +143,9 @@ export const postlogout = async (req, res) => {
         console.log("JWT verification failed during logout:", jwtError.message);
       }
     }
-    const isProd = process.env.NODE_ENV === "production";
-    res.clearCookie("token", {
-      httpOnly: true,
-      secure: !!isProd,
-      sameSite: isProd ? "none" : "lax",
-      path: "/",
-    });
+    // Clear cookies consistently using helper
+    const { clearAuthCookie } = await import("../utils/cookieUtils.js");
+    clearAuthCookie(res);
     // Log logout to LogsAndAudit and ActivityHistory (use sessionId from token if available)
     try {
       const decoded = jwt.verify(
@@ -307,11 +303,9 @@ export const googleLogin = async (req, res) => {
 
     const token = jwt.sign(sessionPayload, process.env.JWT_SECRET);
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: false,
-    });
+    // Use centralized cookie helper to ensure production-safe flags
+    const { setAuthCookie } = await import("../utils/cookieUtils.js");
+    setAuthCookie(res, token);
 
     // Log login activity
     try {
