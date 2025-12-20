@@ -113,11 +113,9 @@ export const postlogin = async (req, res) => {
         check.govtIds.length > 0 && { govtIds: check.govtIds }),
     };
     const token = jwt.sign(payload, process.env.JWT_SECRET);
-    res.cookie("token", token, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: false,
-    });
+    // Use centralized cookie utilities for consistency across auth flows
+    const { setAuthCookie } = await import("../utils/cookieUtils.js");
+    setAuthCookie(res, token);
     return res
       .status(202)
       .json({ success: true, message: "You are logged in successfully" });
@@ -145,10 +143,12 @@ export const postlogout = async (req, res) => {
         console.log("JWT verification failed during logout:", jwtError.message);
       }
     }
+    const isProd = process.env.NODE_ENV === "production";
     res.clearCookie("token", {
       httpOnly: true,
-      sameSite: "lax",
-      secure: false,
+      secure: !!isProd,
+      sameSite: isProd ? "none" : "lax",
+      path: "/",
     });
     // Log logout to LogsAndAudit and ActivityHistory (use sessionId from token if available)
     try {
@@ -193,11 +193,8 @@ export const postlogout = async (req, res) => {
   } catch (error) {
     console.error("Logout error:", error);
     // Still clear the cookie even if there's an error
-    res.clearCookie("token", {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: false,
-    });
+    const { clearAuthCookie } = await import("../utils/cookieUtils.js");
+    clearAuthCookie(res);
     res.status(200).json({ success: true, message: "Logged out successfully" });
   }
 };

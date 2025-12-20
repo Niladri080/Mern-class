@@ -198,11 +198,8 @@ export const deleteAccount = async (req, res) => {
 
     await Citizen.deleteOne({ _id: userId });
 
-    res.clearCookie("token", {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: false,
-    });
+    const { clearAuthCookie } = await import("../utils/cookieUtils.js");
+    clearAuthCookie(res);
 
     return res.status(200).json({
       success: true,
