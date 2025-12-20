@@ -48,6 +48,19 @@ io.engine.on("connection_error", (err) => {
 });
 app.set("io", io);
 
+// Root endpoint
+app.get("/", (req, res) => {
+  res.status(200).json({ 
+    message: "DocVerify API Server",
+    status: "running",
+    version: "1.0.0",
+    endpoints: {
+      health: "/health",
+      api: "/api"
+    }
+  });
+});
+
 // Health check endpoint (for monitoring services like UptimeRobot)
 app.get("/health", (req, res) => {
   res.status(200).json({ 
