@@ -10,8 +10,7 @@ import { ShieldCheck } from "lucide-react";
 import { Eye, EyeOff } from "lucide-react";
 import axios from "axios";
 import AlertModal from "@/components/ui/AlertModal";
-
-const GOOGLE_AUTH_ENDPOINT = "https://accounts.google.com/o/oauth2/v2/auth";
+import { getGoogleAuthUrl } from "../../utils/googleAuth";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -28,31 +27,18 @@ export default function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleGoogleLogin = () => {
-    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-    const redirectUri = import.meta.env.VITE_GOOGLE_REDIRECT_URI;
-
-    if (!clientId || !redirectUri) {
+    try {
+      const url = getGoogleAuthUrl();
+      window.location.href = url;
+    } catch (err) {
       setAlertState({
         open: true,
         title: "Configuration",
-        message: "Google OAuth is not configured. Please set VITE_GOOGLE_CLIENT_ID and VITE_GOOGLE_REDIRECT_URI in your environment.",
+        message: err?.message || "Google OAuth is not configured correctly.",
         primaryLabel: "OK",
         onPrimary: () => setAlertState({ open: false }),
       });
-      return;
     }
-
-    const params = new URLSearchParams({
-      client_id: clientId,
-      redirect_uri: redirectUri,
-      response_type: "code",
-      scope: ["openid", "email", "profile"].join(" "),
-      access_type: "offline",
-      include_granted_scopes: "true",
-      prompt: "consent",
-    });
-
-    window.location.href = `${GOOGLE_AUTH_ENDPOINT}?${params.toString()}`;
   };
   const getLocation = () =>
     new Promise((resolve) => {
