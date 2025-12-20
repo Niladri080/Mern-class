@@ -15,13 +15,25 @@ import {
   authMiddleware,
 } from "./Middlewares/AuthMiddleware.js";
 dotenv.config();
+
+// Basic required env validation to fail-fast with clear errors
+const requiredEnv = ["MONGO_URI", "JWT_SECRET"];
+const missing = requiredEnv.filter((k) => !process.env[k]);
+if (missing.length) {
+  console.error("Missing required environment variables:", missing.join(", "));
+  process.exit(1);
+}
+
+// Normalize FRONTEND_URL (strip trailing slash) but keep local fallback
+const FRONTEND_URL = (process.env.FRONTEND_URL || "http://localhost:5173").replace(/\/+$/, "");
+
 const app = express();
 const server = http.createServer(app);
 app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin: FRONTEND_URL,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -32,7 +44,7 @@ await connectDB();
 // setup socket.io
 const io = new IoServer(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin: FRONTEND_URL,
     methods: ["GET", "POST"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -68,7 +80,8 @@ export { app, server, io };
 
 // Only start listening when not running in test environment
 if (process.env.NODE_ENV !== "test") {
-  server.listen(process.env.PORT, () => {
-    console.log("Server is running on port", process.env.PORT);
+  const PORT = process.env.PORT || 4000;
+  server.listen(PORT, () => {
+    console.log("Server is running on port", PORT);
   });
 }

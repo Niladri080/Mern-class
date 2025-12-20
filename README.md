@@ -37,7 +37,7 @@ npm install
 
 #### Server Environment Variables (`server/.env`)
 
-Create a `.env` file in the `server` directory with the following variables:
+Create a `.env` file in the `server` directory with the following variables (in production set values in Render's environment settings instead of committing `.env`):
 
 ```env
 MONGO_URI=your_mongodb_connection_string
@@ -48,9 +48,14 @@ JWT_SECRET=your_jwt_secret_key
 PORT=4000
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
-GOOGLE_REDIRECT_URI=http://localhost:5173/auth/google/callback
+# In production use your frontend's deployed URL (no trailing slash):
+# e.g. https://docverify-two.vercel.app/auth/google/callback
+GOOGLE_REDIRECT_URI=https://your-frontend.example.com/auth/google/callback
 GEMINI_API_KEY=your_gemini_api_key
 ```
+
+> 💡 Tip: In the Google Cloud Console OAuth 2.0 Client settings, add the exact redirect URI used by your deployed frontend (no trailing slash) to the Authorized redirect URIs list.
+
 
 #### Client Environment Variables (`client/.env`)
 
