@@ -5,7 +5,7 @@ import { ArrowLeft, Download, CheckCircle, XCircle, Clock } from "lucide-react";
 
 export default function DocumentDetailsPage() {
   const { id: documentId } = useParams();
-  const API_BASE_URL = "http://localhost:4000";
+  const API_BASE_URL = import.meta.env.VITE_API_PATH;
   const [document, setDocument] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");

@@ -4,9 +4,8 @@ import App from "./App.jsx";
 import "./App.css";
 import axios from "axios";
 
-// Base URL for API calls (can be overridden with VITE_API_URL)
-axios.defaults.baseURL =
-  import.meta.env.VITE_API_URL || "http://localhost:4000";
+// Base URL for API calls (use VITE_API_PATH from env)
+axios.defaults.baseURL = import.meta.env.VITE_API_PATH;
 // Send cookies (auth token) with requests to the API
 axios.defaults.withCredentials = true;
 

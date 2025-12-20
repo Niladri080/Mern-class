@@ -45,7 +45,7 @@ export default function UserManagement() {
     Math.max(1, Math.ceil((totals.totalUsers || 0) / limit));
 
   useEffect(() => {
-    const SOCKET_URL = axios.defaults.baseURL || "http://localhost:4000";
+    const SOCKET_URL = axios.defaults.baseURL || import.meta.env.VITE_API_PATH;
     console.log("Attempting socket connection to:", SOCKET_URL);
     const socket = io(SOCKET_URL, {
       transports: ["websocket", "polling"],

@@ -32,7 +32,7 @@ await connectDB();
 // setup socket.io
 const io = new IoServer(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || "https://docverify-two.vercel.app/",
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
     methods: ["GET", "POST"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
