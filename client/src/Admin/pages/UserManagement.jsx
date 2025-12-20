@@ -45,7 +45,7 @@ export default function UserManagement() {
     Math.max(1, Math.ceil((totals.totalUsers || 0) / limit));
 
   useEffect(() => {
-    const SOCKET_URL = axios.defaults.baseURL || import.meta.env.VITE_API_PATH;
+    const SOCKET_URL = axios.defaults.baseURL || "https://docverify-oic5.onrender.com";
     console.log("Attempting socket connection to:", SOCKET_URL);
     const socket = io(SOCKET_URL, {
       transports: ["websocket", "polling"],
@@ -99,7 +99,7 @@ export default function UserManagement() {
       try {
         setLoadingActivities(true);
         const res = await axios.get(
-          `/api/admin/users/${selectedUser.id}/history`,
+          `${import.meta.env.VITE_API_PATH}/admin/users/${selectedUser.id}/history`,
           { withCredentials: true }
         );
         if (res.data && res.data.success) {
@@ -122,7 +122,7 @@ export default function UserManagement() {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`/api/admin/users`, {
+      const res = await axios.get(`${import.meta.env.VITE_API_PATH}/admin/users`, {
         params: {
           search: debouncedSearch,
           role: roleFilter,
@@ -179,7 +179,7 @@ export default function UserManagement() {
         try {
           const status = currentStatus === "Active" ? "Inactive" : "Active";
           const res = await axios.post(
-            `/api/admin/users/${userId}/status`,
+            `${import.meta.env.VITE_API_PATH}/admin/users/${userId}/status`,
             { status },
             { withCredentials: true }
           );
