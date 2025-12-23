@@ -7,7 +7,7 @@ client/.env
 
 # Dependencies
 node_modules/
-package-lock.json
+# package-lock.json - Keep for Railway deployment consistency
 
 # Build outputs
 dist/
@@ -23,4 +23,8 @@ build/
 # OS
 .DS_Store
 Thumbs.db
+
+# Documentation (not needed in repo)
+README.md
+DEPLOYMENT_GUIDE.md
 

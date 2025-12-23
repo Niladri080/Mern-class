@@ -37,7 +37,7 @@ function Settings() {
     setLoadingProfile(true);
     try {
       const res = await axios.put(
-        "/api/admin/profile",
+        `${import.meta.env.VITE_API_PATH}/admin/profile`,
         {
           name: profileData.name,
           email: profileData.email,
@@ -91,7 +91,7 @@ function Settings() {
     setChangingPassword(true);
     try {
       const res = await axios.put(
-        "/api/admin/profile/password",
+        `${import.meta.env.VITE_API_PATH}/admin/profile/password`,
         { current: passwordData.current, newPassword: passwordData.new },
         { withCredentials: true }
       );
@@ -117,8 +117,8 @@ function Settings() {
         setLoadingProfile(true);
         setLoadingConfig(true);
         const [pRes, cRes] = await Promise.all([
-          axios.get("/api/admin/profile", { withCredentials: true }),
-          axios.get("/api/admin/config", { withCredentials: true }),
+          axios.get(`${import.meta.env.VITE_API_PATH}/admin/profile`, { withCredentials: true }),
+          axios.get(`${import.meta.env.VITE_API_PATH}/admin/config`, { withCredentials: true }),
         ]);
         const pd = pRes.data;
         const cd = cRes.data;

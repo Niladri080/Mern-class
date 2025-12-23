@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { Admin } from "../Models/AdminModel.js";
 import dotenv from "dotenv";
+import { setAuthCookie, clearAuthCookie } from "../utils/cookieUtils.js";
 dotenv.config();
 export const postsignup = async (req, res) => {
   try {
@@ -60,11 +61,7 @@ export const postlogin = async (req, res) => {
     };
     console.log(payload);
     const token = jwt.sign(payload, process.env.JWT_SECRET);
-    res.cookie("token", token, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: false,
-    });
+    setAuthCookie(res, token);
     return res
       .status(202)
       .json({ success: true, message: "You are logged in successfully" });
@@ -74,10 +71,6 @@ export const postlogin = async (req, res) => {
   }
 };
 export const postlogout = (req, res) => {
-  res.clearCookie("token", {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: false,
-  });
+  clearAuthCookie(res);
   res.status(200).json({ success: true, message: "Logged out successfully" });
 };

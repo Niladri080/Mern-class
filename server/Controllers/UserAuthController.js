@@ -113,11 +113,9 @@ export const postlogin = async (req, res) => {
         check.govtIds.length > 0 && { govtIds: check.govtIds }),
     };
     const token = jwt.sign(payload, process.env.JWT_SECRET);
-    res.cookie("token", token, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: false,
-    });
+    // Use centralized cookie utilities for consistency across auth flows
+    const { setAuthCookie } = await import("../utils/cookieUtils.js");
+    setAuthCookie(res, token);
     return res
       .status(202)
       .json({ success: true, message: "You are logged in successfully" });
@@ -145,11 +143,9 @@ export const postlogout = async (req, res) => {
         console.log("JWT verification failed during logout:", jwtError.message);
       }
     }
-    res.clearCookie("token", {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: false,
-    });
+    // Clear cookies consistently using helper
+    const { clearAuthCookie } = await import("../utils/cookieUtils.js");
+    clearAuthCookie(res);
     // Log logout to LogsAndAudit and ActivityHistory (use sessionId from token if available)
     try {
       const decoded = jwt.verify(
@@ -193,11 +189,8 @@ export const postlogout = async (req, res) => {
   } catch (error) {
     console.error("Logout error:", error);
     // Still clear the cookie even if there's an error
-    res.clearCookie("token", {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: false,
-    });
+    const { clearAuthCookie } = await import("../utils/cookieUtils.js");
+    clearAuthCookie(res);
     res.status(200).json({ success: true, message: "Logged out successfully" });
   }
 };
@@ -206,11 +199,31 @@ export const googleLogin = async (req, res) => {
   try {
     const { code, redirectUri } = req.body;
 
-    if (!code || !redirectUri) {
+    // Validate presence of required data
+    if (!code) {
       return res.status(400).json({
         success: false,
-        message: "Missing authorization code or redirect URI",
+        message: "Missing authorization code",
       });
+    }
+
+    // Ensure we use a production redirect URI: if the provided redirectUri's hostname
+    // does not match the configured production redirect hostname, override it with the env var.
+    let usedRedirectUri = process.env.GOOGLE_REDIRECT_URI;
+    try {
+      const productionHost = new URL(process.env.GOOGLE_REDIRECT_URI).hostname;
+      if (redirectUri) {
+        const providedHost = new URL(redirectUri).hostname;
+        if (providedHost === productionHost) {
+          usedRedirectUri = redirectUri;
+        }
+      }
+    } catch (err) {
+      // If parsing fails or env is missing, usedRedirectUri remains whatever is in env (may be undefined)
+    }
+
+    if (!usedRedirectUri) {
+      return res.status(500).json({ success: false, message: "Server misconfiguration: missing GOOGLE_REDIRECT_URI" });
     }
 
     const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
@@ -222,7 +235,7 @@ export const googleLogin = async (req, res) => {
         code,
         client_id: process.env.GOOGLE_CLIENT_ID,
         client_secret: process.env.GOOGLE_CLIENT_SECRET,
-        redirect_uri: redirectUri,
+        redirect_uri: usedRedirectUri,
         grant_type: "authorization_code",
       }),
     });
@@ -290,11 +303,9 @@ export const googleLogin = async (req, res) => {
 
     const token = jwt.sign(sessionPayload, process.env.JWT_SECRET);
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: false,
-    });
+    // Use centralized cookie helper to ensure production-safe flags
+    const { setAuthCookie } = await import("../utils/cookieUtils.js");
+    setAuthCookie(res, token);
 
     // Log login activity
     try {

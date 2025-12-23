@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { getGoogleRedirectUri } from "./utils/googleAuth";
+import { authAPI } from "../../services/api";
+import { getGoogleRedirectUri } from "../../utils/googleAuth";
 
 export default function GoogleCallback() {
   const navigate = useNavigate();
@@ -24,14 +24,10 @@ export default function GoogleCallback() {
       }
 
       try {
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_PATH}/citizen/auth/google`,
-          {
-            code,
-            redirectUri: getGoogleRedirectUri(),
-          },
-          { withCredentials: true }
-        );
+        const response = await authAPI.citizen.googleLogin({
+          code,
+          redirectUri: getGoogleRedirectUri(),
+        });
 
         if (response.data?.success) {
           navigate("/citizen");
@@ -41,7 +37,6 @@ export default function GoogleCallback() {
           );
         }
       } catch (err) {
-        console.error("Google callback error:", err);
         setError(
           err?.response?.data?.message ||
             "Network error while completing Google login."
@@ -55,9 +50,7 @@ export default function GoogleCallback() {
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-red-600 font-medium">
-          Google login error: {error}
-        </p>
+        <p className="text-red-600 font-medium">Google login error: {error}</p>
       </div>
     );
   }
@@ -68,5 +61,4 @@ export default function GoogleCallback() {
     </div>
   );
 }
-
 
